@@ -1,50 +1,273 @@
-# Welcome to your Expo app 👋
+# React Native Chart Libraries
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Custom chart components for React Native with animations, tooltips, and customization options.
 
-## Get started
+---
 
-1. Install dependencies
+## Overview
 
-   ```bash
-   npm install
-   ```
+This project includes custom-built chart libraries for React Native:
 
-2. Start the app
+| Library | Description |
+|---------|-------------|
+| [PieChart](#piechart) | Pie/Donut chart with animations and tooltips |
+| [SemiCircularProgress](#semicircularprogress) | Semi-circular progress chart for displaying progress |
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Installation
 
 ```bash
-npm run reset-project
+# Install dependencies
+npm install d3-shape react-native-svg
+
+# Start the app
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## Libraries
 
-To learn more about developing your project with Expo, look at the following resources:
+### PieChart
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Pie/Donut Chart component with animation, tooltip, and customization options.
 
-## Join the community
+📁 **Location:** `libs/PieChart/`
 
-Join our community of developers creating universal apps.
+#### Features
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- ✅ Pie Chart and Donut Chart
+- ✅ Animation with easing functions (linear, easeIn, easeOut, easeInOut)
+- ✅ Sequential animation for slices
+- ✅ Interactive speech bubble tooltips
+- ✅ Custom tooltip content / Full custom tooltip
+- ✅ Center label or custom children content
+- ✅ Outer border customization
+- ✅ Selection scale animation
+- ✅ Debug mode
+- ✅ Press callbacks
+
+#### Quick Start
+
+```tsx
+import PieChart, { Slice } from './libs/PieChart';
+
+const data: Slice[] = [
+  { value: 300, color: '#22C55E', label: { text: 'Success' } },
+  { value: 150, color: '#F59E0B', label: { text: 'Warning' } },
+  { value: 50, color: '#EF4444', label: { text: 'Error' } },
+];
+
+<PieChart
+  widthAndHeight={250}
+  series={data}
+  cover={0.6}  // Donut hole (0-1)
+  animation={{
+    enabled: true,
+    duration: 800,
+    easing: 'easeOut',
+  }}
+>
+  <View style={{ alignItems: 'center' }}>
+    <Text>Total</Text>
+    <Text style={{ fontSize: 24, fontWeight: 'bold' }}>500</Text>
+  </View>
+</PieChart>
+```
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `widthAndHeight` | `number` | **required** | Size of the chart |
+| `series` | `Slice[]` | **required** | Data for each slice |
+| `cover` | `number \| Cover` | - | Donut hole radius (0-1) |
+| `animation` | `boolean \| AnimationConfig` | `true` | Animation settings |
+| `showTooltip` | `boolean` | `true` | Show tooltip on press |
+| `tooltipDelay` | `number` | `3000` | Auto-hide delay (ms) |
+| `centerLabel` | `CenterLabelConfig` | - | Center label configuration |
+| `children` | `ReactNode` | - | Custom center content |
+| `debug` | `boolean` | `false` | Debug mode |
+
+📖 **Full Documentation:** [libs/PieChart/README.md](libs/PieChart/README.md)
+
+---
+
+### SemiCircularProgress
+
+Semi-circular progress chart for displaying progress in a half-circle format.
+
+📁 **Location:** `libs/SemiCircularProgress/`
+
+#### Features
+
+- ✅ Semi-circular (180°) progress chart
+- ✅ Multiple segments with different thickness
+- ✅ Progress animation (draws background first, then animates progress)
+- ✅ Custom corner radius (start/end separately)
+- ✅ Interactive speech bubble tooltips
+- ✅ Custom tooltip content / Full custom tooltip
+- ✅ Center content (config or render function)
+- ✅ Debug mode
+- ✅ Press callbacks
+
+#### Quick Start
+
+```tsx
+import SemiCircularProgress from './libs/SemiCircularProgress';
+
+<SemiCircularProgress
+  width={300}
+  height={200}
+  segments={[
+    {
+      value: 220,
+      color: '#22C55E',
+      label: '220',
+      sublabel: '73% Checked',
+      thicknessMultiplier: 1.0,
+    },
+    {
+      value: 80,
+      color: '#E5E7EB',
+      label: '80',
+      sublabel: 'In Progress',
+      thicknessMultiplier: 0.6,
+    },
+  ]}
+  thickness={0.22}
+  animation={{
+    enabled: true,
+    duration: 800,
+    easing: 'easeOut',
+  }}
+>
+  {({ total, animationProgress }) => (
+    <View style={{ alignItems: 'center' }}>
+      <Text>Total Suppliers</Text>
+      <Text style={{ fontSize: 40, fontWeight: 'bold' }}>
+        {Math.round(total * animationProgress)}
+      </Text>
+    </View>
+  )}
+</SemiCircularProgress>
+```
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `width` | `number` | **required** | Width of the component |
+| `height` | `number` | **required** | Height of the component |
+| `segments` | `ProgressSegment[]` | **required** | Segment data |
+| `thickness` | `number` | `0.15` | Arc thickness (0-1) |
+| `cornerRadius` | `number` | `0` | Corner radius |
+| `animation` | `AnimationConfig` | enabled | Animation settings |
+| `tooltip` | `TooltipConfig` | - | Tooltip settings |
+| `centerOffset` | `number` | `0` | Adjust center content position |
+| `children` | `(data) => ReactNode` | - | Custom center content |
+| `debug` | `boolean` | `false` | Debug mode |
+
+📖 **Full Documentation:** [libs/SemiCircularProgress/README.md](libs/SemiCircularProgress/README.md)
+
+---
+
+## Project Structure
+
+```
+libs/
+├── PieChart/
+│   ├── index.ts           # Main exports
+│   ├── PieChart.tsx       # Main component
+│   ├── types.ts           # TypeScript types
+│   ├── utils.ts           # Utility functions
+│   ├── hooks.ts           # Custom hooks
+│   ├── README.md          # Documentation
+│   └── components/
+│       ├── Tooltip.tsx
+│       ├── CenterLabel.tsx
+│       └── DebugOverlay.tsx
+│
+└── SemiCircularProgress/
+    ├── index.ts           # Main exports
+    ├── SemiCircularProgress.tsx
+    ├── types.ts           # TypeScript types
+    ├── utils.ts           # Utility functions
+    ├── hooks.ts           # Custom hooks
+    ├── README.md          # Documentation
+    └── components/
+        ├── Tooltip.tsx
+        ├── CenterContent.tsx
+        ├── ArcSegments.tsx
+        └── DebugOverlay.tsx
+```
+
+---
+
+## Examples
+
+See usage examples at:
+
+```
+components/PieChartComponent.tsx
+```
+
+Includes:
+- Donut Chart with legend and action buttons
+- Semi-Circular Progress with status summary
+- Custom tooltip content
+- Interactive controls
+
+---
+
+## Tech Stack
+
+- **React Native** - Mobile framework
+- **Expo** - Development platform
+- **TypeScript** - Type safety
+- **d3-shape** - SVG path generation
+- **react-native-svg** - SVG rendering
+
+---
+
+## Development
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- Expo CLI
+
+### Commands
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npx expo start
+
+# Run on Android
+npx expo run:android
+
+# Run on iOS
+npx expo run:ios
+```
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author
+
+**Cat Tech** 🐱
+
+- GitHub: [@meowcoding7044](https://github.com/meowcoding7044)
+- Location: Thailand, Bangkok
+
+---
+
+*Made with ❤️ in Thailand*
