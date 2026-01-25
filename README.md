@@ -261,20 +261,3 @@ npx expo run:ios
 ```
 
 ---
-
-## License
-
-MIT License
-
----
-
-## Author
-
-**Cat Tech** 🐱
-
-- GitHub: [@meowcoding7044](https://github.com/meowcoding7044)
-- Location: Thailand, Bangkok
-
----
-
-*Made with ❤️ in Thailand*
