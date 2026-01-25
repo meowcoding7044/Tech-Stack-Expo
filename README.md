@@ -2,6 +2,13 @@
 
 Custom chart components for React Native with animations, tooltips, and customization options.
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshot-1.jpg" width="300" alt="Donut Chart" />
+  <img src="screenshot-2.jpg" width="300" alt="Semi-Circular Progress" />
+</p>
+
 ---
 
 ## Overview
