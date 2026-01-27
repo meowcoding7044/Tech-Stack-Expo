@@ -12,7 +12,7 @@ import {
     DebugInfoPanel,
     Tooltip,
 } from './components'
-import { usePieAnimation, useSelection, useSelectionScale } from './hooks'
+import { usePieAnimation, useSelection, useSelectionOpacity, useSelectionScale } from './hooks'
 import { AnimationConfig, PieChartProps, Slice, TooltipRenderData } from './types'
 import {
     ANIMATION_DEFAULTS,
@@ -34,6 +34,7 @@ const PieChart = ({
     style = {},
     padAngle,
     showTooltip = DEFAULTS.showTooltip,
+    alwaysShowTooltips,
     tooltipDelay = DEFAULTS.tooltipDelay,
     tooltipStyle = {},
     showOuterBorder = DEFAULTS.showOuterBorder,
@@ -95,7 +96,15 @@ const PieChart = ({
         series.length,
         selectedIndex,
         animationEnabled,
-        animationConfig.selectionScale ?? ANIMATION_DEFAULTS.selectionScale
+        (animationConfig.enableSelectionScale ?? ANIMATION_DEFAULTS.enableSelectionScale)
+            ? (animationConfig.selectionScale ?? ANIMATION_DEFAULTS.selectionScale)
+            : 1
+    )
+    const selectionOpacity = useSelectionOpacity(
+        series.length,
+        selectedIndex,
+        animationConfig.animateOpacity !== false && animationEnabled,
+        animationConfig.unselectedOpacity ?? ANIMATION_DEFAULTS.unselectedOpacity
     )
 
     // ========================================================================
@@ -123,10 +132,8 @@ const PieChart = ({
     // Render Tooltip
     // ========================================================================
 
-    const renderSelectedTooltip = () => {
-        if (!showTooltip || selectedIndex === null) return null
-
-        const selectedArc = arcs[selectedIndex]
+    const renderTooltipForSlice = (index: number) => {
+        const selectedArc = arcs[index]
         const slice = selectedArc.data as Slice
         const sliceValue = slice.value
         const percentage = (sliceValue / total) * 100
@@ -149,7 +156,7 @@ const PieChart = ({
 
         const tooltipRenderData: TooltipRenderData = {
             slice,
-            index: selectedIndex,
+            index,
             value: sliceValue,
             percentage,
             total,
@@ -160,7 +167,11 @@ const PieChart = ({
 
         // Custom render tooltip (full control)
         if (renderTooltip) {
-            return <CustomTooltipWrapper data={tooltipRenderData} renderTooltip={renderTooltip} />
+            return (
+                <View key={`tooltip-${index}`} style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+                    <CustomTooltipWrapper data={tooltipRenderData} renderTooltip={renderTooltip} />
+                </View>
+            )
         }
 
         // Default tooltip
@@ -169,8 +180,9 @@ const PieChart = ({
 
         return (
             <Tooltip
+                key={`tooltip-${index}`}
                 slice={slice}
-                index={selectedIndex}
+                index={index}
                 value={sliceValue}
                 percentage={percentage}
                 total={total}
@@ -188,6 +200,17 @@ const PieChart = ({
                 renderContent={renderTooltipContent}
             />
         )
+    }
+
+    const renderTooltips = () => {
+        if (!showTooltip) return null
+
+        if (alwaysShowTooltips) {
+            return series.map((_, index) => renderTooltipForSlice(index))
+        }
+
+        if (selectedIndex === null) return null
+        return renderTooltipForSlice(selectedIndex)
     }
 
     // ========================================================================
@@ -228,6 +251,7 @@ const PieChart = ({
                     {arcs.map((arc: any, index: number) => {
                         const progress = animationProgress[index] ?? (animationEnabled ? 0 : 1)
                         const scale = selectionScale[index] ?? 1
+                        const opacity = selectionOpacity[index] ?? 1
 
                         if (progress <= 0) return null
 
@@ -252,7 +276,7 @@ const PieChart = ({
                                 d={arcGenerator(arc) as string}
                                 onPressIn={() => handleSlicePress(index, sliceData)}
                                 delayPressIn={0}
-                                opacity={selectedIndex !== null && selectedIndex !== index ? 0.7 : 1}
+                                opacity={opacity}
                             />
                         )
                     })}
@@ -319,7 +343,7 @@ const PieChart = ({
             )}
 
             {/* Tooltip */}
-            {renderSelectedTooltip()}
+            {renderTooltips()}
 
             {/* Debug arrow target marker */}
             {renderDebugArrowTarget()}

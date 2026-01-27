@@ -39,6 +39,10 @@ export const ANIMATION_DEFAULTS = {
     sequentialDelay: 100,
     selectionScale: 1.05,
     scaleAnimationDuration: 200,
+    unselectedOpacity: 0.5,
+    animateOpacity: true,
+    opacityAnimationDuration: 150,
+    enableSelectionScale: true,
 }
 
 export const CENTER_LABEL_DEFAULTS = {

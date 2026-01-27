@@ -27,4 +27,4 @@ export {
 } from './utils'
 
 // Hooks (for advanced usage)
-export { usePieAnimation, useSelection, useSelectionScale } from './hooks'
+export { usePieAnimation, useSelection, useSelectionOpacity, useSelectionScale } from './hooks'

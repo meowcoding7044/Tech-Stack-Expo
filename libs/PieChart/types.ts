@@ -102,6 +102,21 @@ export type AnimationConfig = {
     sequential?: boolean
     sequentialDelay?: number
     selectionScale?: number
+    /**
+     * Opacity of unselected slices when a slice is selected.
+     * Default: 0.5
+     */
+    unselectedOpacity?: number
+    /**
+     * Whether to animate the opacity change.
+     * Default: true
+     */
+    animateOpacity?: boolean
+    /**
+     * Whether to expand the slice when selected.
+     * Default: true
+     */
+    enableSelectionScale?: boolean
 }
 
 // ============================================================================
@@ -115,6 +130,7 @@ export type PieChartProps = {
     style?: StyleProp<ViewStyle>
     padAngle?: number
     showTooltip?: boolean
+    alwaysShowTooltips?: boolean
     tooltipDelay?: number
     tooltipStyle?: TooltipStyle
     showOuterBorder?: boolean

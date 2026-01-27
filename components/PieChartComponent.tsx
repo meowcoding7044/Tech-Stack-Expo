@@ -144,14 +144,17 @@ function PieChartSection() {
           key={animationKey}
           widthAndHeight={220}
           series={series}
-          cover={0.65}
+          cover={0.70}
           radiusScale={0.85}
+          alwaysShowTooltips={true}
           animation={{
+            enableSelectionScale: false,
             enabled: true,
             duration: 800,
             easing: 'easeOut',
             sequential: true,
             sequentialDelay: 100,
+
           }}
           tooltipStyle={{
             width: 100,
@@ -398,14 +401,14 @@ export default function PieChartComponent() {
 
         <View style={styles.developerSection}>
           <View style={styles.divider} />
-          
+
           <View style={styles.developerInfo}>
             <Text style={styles.developerLabel}>Developed by</Text>
             <View style={styles.developerNameRow}>
               <Text style={styles.catEmoji}>🐱</Text>
               <Text style={styles.developerName}>{DEVELOPER.name}</Text>
             </View>
-            
+
             <Pressable
               style={({ pressed }) => [
                 styles.githubButton,
@@ -436,7 +439,7 @@ const styles = StyleSheet.create({
   // Container
   container: {
     flex: 1,
-    width:'100%',
+    width: '100%',
     backgroundColor: '#F3F4F6',
   },
   contentContainer: {

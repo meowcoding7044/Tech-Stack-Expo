@@ -125,6 +125,57 @@ export function useSelectionScale(
 }
 
 // ============================================================================
+// Selection Opacity Hook
+// ============================================================================
+
+export function useSelectionOpacity(
+    seriesLength: number,
+    selectedIndex: number | null,
+    animationEnabled: boolean,
+    unselectedOpacity: number = ANIMATION_DEFAULTS.unselectedOpacity
+) {
+    const [opacities, setOpacities] = useState<number[]>(Array(seriesLength).fill(1))
+
+    useEffect(() => {
+        // Target opacities: selected = 1, unselected = unselectedOpacity, none selected = all 1
+        const targetOpacities = Array(seriesLength).fill(0).map((_, i) => {
+            if (selectedIndex === null) return 1
+            return selectedIndex === i ? 1 : unselectedOpacity
+        })
+
+        if (!animationEnabled) {
+            setOpacities(targetOpacities)
+            return
+        }
+
+        const startOpacities = [...opacities]
+        const startTime = performance.now()
+        const duration = ANIMATION_DEFAULTS.opacityAnimationDuration
+
+        const animateOpacity = (currentTime: number) => {
+            const elapsed = currentTime - startTime
+            const progress = Math.min(elapsed / duration, 1)
+            const easedProgress = easingFunctions.easeOut(progress)
+
+            const newOpacities = startOpacities.map((start, i) => {
+                const target = targetOpacities[i]
+                return start + (target - start) * easedProgress
+            })
+
+            setOpacities(newOpacities)
+
+            if (progress < 1) {
+                requestAnimationFrame(animateOpacity)
+            }
+        }
+
+        requestAnimationFrame(animateOpacity)
+    }, [selectedIndex, animationEnabled, unselectedOpacity, seriesLength])
+
+    return opacities
+}
+
+// ============================================================================
 // Selection Hook
 // ============================================================================
 
