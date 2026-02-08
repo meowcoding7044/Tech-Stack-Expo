@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "tech-stack-poc",
-    "slug": "tech-stack-poc",
+    "slug": "chart-libraries",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vegeta7044sorganization.chartlibraries",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +23,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.vegeta7044sorganization.chartlibraries"
     },
     "web": {
       "output": "static",
@@ -43,6 +48,14 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "appEnv": "dev",
+      "eas": {
+        "projectId": "cfa5ccbb-ae81-49a8-bf10-e6860d0a98e8"
+      }
+    },
+    "owner": "vegeta7044s-organization"
   }
 }

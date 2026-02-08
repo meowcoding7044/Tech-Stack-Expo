@@ -45,6 +45,7 @@ const data: Slice[] = [
 | `style` | `StyleProp<ViewStyle>` | - | Container style |
 | `padAngle` | `number` | - | Gap between slices (e.g., `0.02`) |
 | `showTooltip` | `boolean` | `true` | Show tooltip on slice press |
+| `alwaysShowTooltips` | `boolean` | `false` | Always show tooltips (useful for static charts) |
 | `tooltipDelay` | `number` | `3000` | Auto-hide delay (ms) |
 | `tooltipStyle` | `TooltipStyle` | - | Customize tooltip appearance |
 | `showOuterBorder` | `boolean` | `true` | Show outer border |
@@ -118,6 +119,9 @@ type AnimationConfig = {
   sequential?: boolean;      // default: false
   sequentialDelay?: number;  // default: 100
   selectionScale?: number;   // default: 1.05
+  unselectedOpacity?: number; // default: 0.5
+  animateOpacity?: boolean;   // default: true
+  enableSelectionScale?: boolean; // default: true
 }
 ```
 
@@ -301,6 +305,51 @@ type CenterLabelConfig = {
     Alert.alert(slice.label?.text || 'Slice', `Value: ${slice.value}`);
   }}
 />
+```
+
+### Complete Dashboard Example
+
+```tsx
+function PieChartSection() {
+  const [series, setSeries] = useState<Slice[]>([
+    { value: 1000, color: '#22C55E', label: { text: 'Found' } },
+    { value: 800, color: '#EF4444', label: { text: 'Not Found' } },
+    { value: 500, color: '#F59E0B', label: { text: 'In Progress' } },
+  ]);
+
+  const total = series.reduce((sum, s) => sum + s.value, 0);
+
+  return (
+    <View style={styles.chartWrapper}>
+      <PieChart
+        widthAndHeight={220}
+        series={series}
+        cover={0.70}
+        radiusScale={0.85}
+        alwaysShowTooltips={true}
+        animation={{
+          enableSelectionScale: false,
+          enabled: true,
+          duration: 800,
+          easing: 'easeOut',
+          sequential: true,
+          sequentialDelay: 100,
+        }}
+        tooltipStyle={{
+          width: 100,
+          height: 55,
+          borderRadius: 10,
+        }}
+      >
+        <View style={styles.centerContent}>
+          <Text style={styles.centerLabel}>Total</Text>
+          <Text style={styles.centerValue}>{total.toLocaleString()}</Text>
+        </View>
+      </PieChart>
+    </View>
+  );
+}
+
 ```
 
 ### Debug Mode
