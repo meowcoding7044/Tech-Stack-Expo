@@ -7,8 +7,7 @@
     "dev": {
       "distribution": "internal",
       "android": {
-        "buildType": "apk",
-        "versionCode": "auto"
+        "buildType": "apk"
       },
       "env": {
         "APP_ENV": "dev"
@@ -19,8 +18,7 @@
     "sit": {
       "distribution": "internal",
       "android": {
-        "buildType": "apk",
-        "versionCode": "auto"
+        "buildType": "apk"
       },
       "env": {
         "APP_ENV": "sit"
@@ -30,8 +28,7 @@
     },
     "prod": {
       "android": {
-        "buildType": "app-bundle",
-        "versionCode": "auto"
+        "buildType": "app-bundle"
       },
       "env": {
         "APP_ENV": "prod"
