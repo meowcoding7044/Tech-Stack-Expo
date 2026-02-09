@@ -1,0 +1,67 @@
+name: Build Dev Environments
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Build profile to use'
+        required: true
+        type: choice
+        options:
+          - dev
+          - sit
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g eas-cli
+          npm install
+
+      - name: Build ${{ inputs.profile }} with EAS
+        run: |
+          eas build -p android --profile ${{ inputs.profile }} --non-interactive --json > build-${{ inputs.profile }}.json
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Extract build info
+        id: build_info
+        run: |
+          echo "BUILD_URL=$(jq -r '.[0].artifacts.buildUrl' build-${{ inputs.profile }}.json)" >> $GITHUB_OUTPUT
+          echo "BUILD_ID=$(jq -r '.[0].id' build-${{ inputs.profile }}.json)" >> $GITHUB_OUTPUT
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.profile }}-build-info
+          path: build-${{ inputs.profile }}.json
+
+      - name: Send Email Notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_HOST }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASS }}
+          subject: "📦 ${{ inputs.profile == 'dev' && 'DEV' || 'SIT' }} Build Ready"
+          to: ${{ secrets.MAIL_TO }}
+          from: Expo CI <${{ secrets.SMTP_USER }}>
+          html_body: |
+            <h3>${{ inputs.profile == 'dev' && 'DEV' || 'SIT' }} Build สำเร็จ ✅</h3>
+            <p><b>Environment:</b> ${{ inputs.profile }}</p>
+            <p><b>Branch:</b> dev</p>
+            <p><b>Commit:</b> ${{ github.sha }}</p>
+            <p><b>Build ID:</b> ${{ steps.build_info.outputs.BUILD_ID }}</p>
+            <hr>
+            <p>ดาวน์โหลด APK:</p>
+            <a href="${{ steps.build_info.outputs.BUILD_URL }}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">👉 Click to Download</a>
