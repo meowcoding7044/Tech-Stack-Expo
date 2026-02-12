@@ -4,21 +4,6 @@
 
 ## 📋 Overview Workflow
 
-```mermaid
-graph TD
-    A[Start: Generate CSR on Mac] --> B[Apple Developer Portal]
-    B --> C[Create Certificate (.cer)]
-    B --> D[Create App ID (Identifier)]
-    C --> E[Create Provisioning Profile]
-    D --> E
-    E --> F[Build App (.ipa)]
-    F --> G{Distribution Method}
-    G -->|App Store / TestFlight| H[Upload via Transporter/Xcode]
-    G -->|Ad Hoc / Enterprise| I[OTA Distribution (Self-hosted)]
-```
-
----
-
 ## 1. การเตรียม Certificates & Profiles (Preparation) 🔑
 
 ก่อนเริ่ม Build แอป คุณต้องเตรียมกุญแจและสิทธิ์ต่างๆ ให้เรียบร้อยก่อน
